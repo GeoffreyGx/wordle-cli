@@ -5,11 +5,12 @@ import words
 wordlist = ['AIMER', 'ARBRE']
 
 class Wordle:
-    def __init__(self, wordlist):
+    def __init__(self, wordlist, attempts = 5, debug = False):
         self.wordlist = wordlist
         self.secret_word = random.choice(self.wordlist)
         self.guesses = []
-        self.attempts = 5
+        self.attempts = attempts
+        self.debug = debug
 
     def is_valid_word(self, word):
         if word in self.wordlist:
@@ -33,8 +34,9 @@ class Wordle:
         return evaluation
     
     def play(self):
-        while self.attempts != 0 and self.secret_word not in self.guesses:
+        if self.debug:
             print(self.secret_word)
+        while self.attempts != 0 and self.secret_word not in self.guesses:
             guess = input("Entrer un mot : ").upper()
             if guess not in self.wordlist:
                 print("Le mot n'existe pas")
@@ -47,6 +49,9 @@ class Wordle:
             print("Félicitations ! Vous avez gagné(e), le mot était bien " + self.secret_word)
         else:
             print("Vous n'avez pas trouvé le mot... C'était " + self.secret_word)
-        
-test = Wordle(words.wordlist)
-test.play()
+
+def main():
+    test = Wordle(words.wordlist, debug = True)
+    test.play()
+
+restart.restartEngine(main)
