@@ -20,15 +20,6 @@ class Wordle:
         self.attempts = attempts
         self.debug = debug
 
-    def is_valid_word(self, word):
-        """
-        Vérifie si le mot est dans la liste de mots
-        """
-        if word in self.wordlist:
-            return True
-        else:
-            return False
-
     def show_evalauation(self, evaluation):
         """
         Affiche les cases de couleurs du mot évalué
@@ -64,13 +55,15 @@ class Wordle:
             print(self.secret_word)
         while self.attempts != 0 and self.secret_word not in self.guesses:
             guess = input("Entrer un mot : ").upper()
-            if guess not in self.wordlist:
+            if len(guess) != len(self.secret_word):
+                print("Le mot doit avoir une longueur de " + str(len(self.secret_word)) + " lettres")
+            elif guess not in self.wordlist:
                 print("Le mot n'existe pas")
-                continue
-            self.show_evalauation(self.evaluate_guess(guess))
-            print(self.alphabet)
-            self.attempts = self.attempts - 1
-            self.guesses.append(guess)
+            else:
+                self.show_evalauation(self.evaluate_guess(guess))
+                print(self.alphabet)
+                self.attempts = self.attempts - 1
+                self.guesses.append(guess)
 
         if self.secret_word in self.guesses:
             print("Félicitations ! Vous avez gagné(e), le mot était bien " + self.secret_word)
