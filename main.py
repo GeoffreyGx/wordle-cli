@@ -33,14 +33,17 @@ class Wordle:
         """
         Affiche les cases de couleurs du mot évalué
         """
-        print(''.join(evaluation))
+        for char in evaluation:
+            print(char, end='')
+        print() # Ajoute un retour à la ligne
+
 
     def evaluate_guess(self, word):
         """
         Verifie les lettres bien placées et mal placées
         """
         evaluation = ['⬛' for i in range(len(self.secret_word))]
-        secret_letters = list(self.secret_word)
+        secret_letters = [char for char in self.secret_word]
         for i in range(len(self.secret_word)):
             if self.secret_word[i] == word[i]:
                 evaluation[i] = '🟩'
@@ -84,7 +87,7 @@ class Alphabet:
         Constructeur de la classe Alphabet.
         Ne prend aucun argument. Initialise l'alphabet et un dictionnaire lettres utilisées.
         """
-        self.alphabet = list("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
+        self.alphabet = [*'ABCDEFGHIJKLMNOPQRSTUVWXYZ']
         self.used = {}
 
     def set_green(self, letter):
