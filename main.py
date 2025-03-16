@@ -15,12 +15,12 @@ class Wordle:
         """
         self.wordlist = wordlist
         self.secret_word = random.choice(self.wordlist)
-        self.guesses = []
+        self.guesses = [] # Liste des mots déjà essayés
         self.alphabet = Alphabet()
         self.attempts = attempts
         self.debug = debug
 
-    def show_evalauation(self, evaluation):
+    def show_evaluation(self, evaluation):
         """
         Affiche les cases de couleurs du mot évalué
         """
@@ -35,12 +35,12 @@ class Wordle:
         """
         evaluation = ['⬛' for i in range(len(self.secret_word))]
         secret_letters = [char for char in self.secret_word]
-        for i in range(len(self.secret_word)):
+        for i in range(len(self.secret_word)): # Vérifie les lettres bien placées
             if self.secret_word[i] == word[i]:
                 evaluation[i] = '🟩'
                 secret_letters[i] = None
                 self.alphabet.set_green(word[i])
-        for i in range(len(self.secret_word)):
+        for i in range(len(self.secret_word)): # Vérifie les lettres mal placées mais existantes
             if word[i] in secret_letters and evaluation[i] == '⬛':
                 evaluation[i] = '🟨'
                 self.alphabet.set_yellow(word[i])
@@ -53,14 +53,14 @@ class Wordle:
         """
         if self.debug:
             print(self.secret_word)
-        while self.attempts != 0 and self.secret_word not in self.guesses:
+        while self.attempts != 0 and self.secret_word not in self.guesses: # Boucle tant que le mot n'est pas trouvé et qu'il reste des tentatives
             guess = input("Entrer un mot : ").upper()
             if len(guess) != len(self.secret_word):
                 print("Le mot doit avoir une longueur de " + str(len(self.secret_word)) + " lettres")
             elif guess not in self.wordlist:
                 print("Le mot n'existe pas")
             else:
-                self.show_evalauation(self.evaluate_guess(guess))
+                self.show_evaluation(self.evaluate_guess(guess))
                 print(self.alphabet)
                 self.attempts = self.attempts - 1
                 self.guesses.append(guess)
