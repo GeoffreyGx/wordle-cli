@@ -81,7 +81,6 @@ class Alphabet:
     """
     Alphabet class. Utilisé pour garder une trace des lettres utilisés et bien placées.
     """
-
     def __init__(self):
         """
         Constructeur de la classe Alphabet.
@@ -103,13 +102,16 @@ class Alphabet:
         self.used[letter] = "yellow"
 
     def __str__(self):
+        """
+        Permet d'afficher l'alphabet avec les lettres utilisées et leur statut
+        """
         string = ""
         for letter in self.alphabet:
             if letter in self.used:
                 if self.used[letter] == "green":
-                    string += letter + "->🟩  "
+                    string += letter + "-> 🟩  "
                 elif self.used[letter] == "yellow":
-                    string += letter + "->🟨  "
+                    string += letter + "-> 🟨  "
             else:
                 string += letter + "->⬛  "
         return string
