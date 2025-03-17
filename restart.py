@@ -1,13 +1,25 @@
-def restartEngine(function):
+#
+# Restart Library
+# Une librairie pour redémarrer automatiquement une fonction 
+# Créée par Geoffrey Gambicchia
+#
+
+def restart(function):
+    """
+    Redémarre n'importe quel fonction automatiquement
+    """
     function()
-    while restart() == True:
+    while ask_restart() == True:
         function()
 
 
-def restart():
-    liste = ["OUI","oui","Oui","YES","Yes","yes","OK","ok","1","o"]
-    rep = input("Voulez-vous recommencer ? : ")
+def ask_restart():
+    """
+    Demande à l'utilisateur si il souhaite redémarrer
+    """
+    liste = ["oui", "yes", "ok", "1", "o", "y"]
+    rep = input("Voulez-vous recommencer ? [y/N]: ").lower()
     if rep in liste:
         return True
     else:
-        print('Au revoir')
+        print('A bientôt 👋')
