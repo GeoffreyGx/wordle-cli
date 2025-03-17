@@ -1,12 +1,12 @@
-import random
-import restart
-import words
+import random # Utilisé pour séléctionner un mot dans la liste
+import restart # Outil pour redémarrer le jeu automatiquement
+import words # Liste des mots
 
 class Wordle:
     """
     Wordle game class. Utilisé pour jouer et éxecuter le jeu Wordle.
     """
-    def __init__(self, wordlist, attempts = 5, debug = False):
+    def __init__(self, wordlist, attempts = 6, debug = False):
         """
         Constructeur de la classe Wordle. 
         wordlist : liste de mots à deviner
@@ -17,6 +17,7 @@ class Wordle:
         self.secret_word = random.choice(self.wordlist)
         self.guesses = [] # Liste des mots déjà essayés
         self.alphabet = Alphabet()
+        self.max_attempts = attempts
         self.attempts = attempts
         self.debug = debug
 
@@ -36,14 +37,17 @@ class Wordle:
         evaluation = ['⬛' for i in range(len(self.secret_word))]
         secret_letters = [char for char in self.secret_word]
         for i in range(len(self.secret_word)): # Vérifie les lettres bien placées
-            if self.secret_word[i] == word[i]:
+            if word[i] == self.secret_word[i]:
                 evaluation[i] = '🟩'
                 secret_letters[i] = None
-                self.alphabet.set_green(word[i])
+                if word[i] not in secret_letters:
+                    self.alphabet.remove_letter(word[i])
         for i in range(len(self.secret_word)): # Vérifie les lettres mal placées mais existantes
             if word[i] in secret_letters and evaluation[i] == '⬛':
                 evaluation[i] = '🟨'
-                self.alphabet.set_yellow(word[i])
+        for i in range(len(self.secret_word)): # Vérifie les lettres inexistante
+            if word[i] not in secret_letters:
+                self.alphabet.remove_letter(word[i])
         return evaluation
 
     def play(self):
@@ -51,10 +55,11 @@ class Wordle:
         Fonction principale pour jouer au jeu Wordle. 
         Utilisé pour gérer les tours et les tentatives. Limite le nombre de tentatives.
         """
+        print(f'Bienvenue sur le Wordle.\nVous devez deviner le mot en {self.max_attempts} coups!')
         if self.debug:
             print(self.secret_word)
         while self.attempts != 0 and self.secret_word not in self.guesses: # Boucle tant que le mot n'est pas trouvé et qu'il reste des tentatives
-            guess = input("Entrer un mot : ").upper()
+            guess = input(f"Entrer un mot ({self.max_attempts - self.attempts + 1}/{self.max_attempts}): ").upper()
             if len(guess) != len(self.secret_word):
                 print("Le mot doit avoir une longueur de " + str(len(self.secret_word)) + " lettres")
             elif guess not in self.wordlist:
@@ -64,6 +69,7 @@ class Wordle:
                 print(self.alphabet)
                 self.attempts = self.attempts - 1
                 self.guesses.append(guess)
+            print() # Ajoute un retour un ligne
 
         if self.secret_word in self.guesses:
             print("Félicitations ! Vous avez gagné(e), le mot était bien " + self.secret_word)
@@ -80,19 +86,13 @@ class Alphabet:
         Ne prend aucun argument. Initialise l'alphabet et un dictionnaire lettres utilisées.
         """
         self.alphabet = [*'ABCDEFGHIJKLMNOPQRSTUVWXYZ']
-        self.used = {}
+        self.status = {}
 
-    def set_green(self, letter):
-        """
-        Change le statut de la lettre en vert
-        """
-        self.used[letter] = "green"
-
-    def set_yellow(self, letter):
+    def remove_letter(self, letter):
         """
         Change le statut de la lettre en jaune
         """
-        self.used[letter] = "yellow"
+        self.status[letter] = "inactive"
 
     def __str__(self):
         """
@@ -100,20 +100,18 @@ class Alphabet:
         """
         string = ""
         for letter in self.alphabet:
-            if letter in self.used:
-                if self.used[letter] == "green":
-                    string += letter + "-> 🟩  "
-                elif self.used[letter] == "yellow":
-                    string += letter + "-> 🟨  "
+            if letter in self.status:
+                if self.status[letter] == "inactive":
+                    string += "  "
             else:
-                string += letter + "->⬛  "
+                string += letter + " "
         return string
 
 def main():
     """
     Fonction principale. Utilisé pour initialiser le jeu et le lancer.
     """
-    test = Wordle(words.wordlist, debug = True)
+    test = Wordle(words.wordlist)
     test.play()
 
-restart.restartEngine(main) # Permet de relancer le jeu si l'utilisateur le souhaite automatiquement
+restart.restart(main) # Permet de relancer le jeu si l'utilisateur le souhaite automatiquement
